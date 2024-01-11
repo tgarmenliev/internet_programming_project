@@ -1,100 +1,50 @@
 import { db } from '@/lib/db';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import CreatePerson from './CreatePerson';
 
-function CreatePerson() {
-  const [name, setName] = useState('')
-  const [age, setAge] = useState('')
-  const [birthday, setBirthday] = useState('')
-  const [interests, setInterests] = useState('')
+export default function Home({ initialPeople }) {
+  const [people, setPeople] = useState(initialPeople);
+  const router = useRouter();
 
-  return (
-    <div className="w-1/4">
-      <div className="flex flex-col gap-2">
-        <label htmlFor="name">Name:</label>
-        <input 
-          type="text" 
-          id="name" 
-          name="name" 
-          className="border border-gray-300 p-1" 
-          onChange={(event) => setName(event.target.value)}
-          value={name}/>
-
-        <label htmlFor="age">Age:</label>
-        <input 
-          type="number" 
-          id="age" 
-          name="age" 
-          className="border border-gray-300 p-1"
-          onChange={(event) => setAge(event.target.value)}
-          value={age}
-          />
-
-        <label htmlFor="birthday">Birthday:</label>
-        <input 
-          type="date" 
-          id="birthday" 
-          name="birthday" 
-          className="border border-gray-300 p-1" 
-          onChange={(event) => setBirthday(event.target.value)}
-          value={birthday}
-          />
-
-        <label htmlFor="interests">Interests:</label>
-        <textarea 
-          type="text" 
-          id="interests" 
-          name="interests" 
-          className="border border-gray-300 p-1" 
-          onChange={(event) => setInterests(event.target.value)}
-          value={interests}
-          />
-
-        <button 
-          type="submit" 
-          className="bg-blue-500 text-white py-2 px-4 rounded"
-          onClick={ async () => {
-            await fetch('/api/createPerson', {
-              method: 'POST',
-              body: JSON.stringify({ name, age, birthday, interests }),
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-          }}>
-            Create
-        </button>
-      </div>
-    </div>
-  )
-}
-
-export default function Home({ people }) {
   return (
     <div>
       <h1 className="text-2xl font-bold">Birthday website</h1>
       <h3 className="text-xl mt-4 font-bold">Create person:</h3>
-      <div><CreatePerson /></div>
-      <h3 className="text-xl mt-4 font-bold">List of people:</h3>
       <div>
+        <CreatePerson addPerson={(person) => setPeople([person, ...people])} />
+      </div>
+      <h3 className="text-xl mt-4 font-bold">List of people:</h3>
+      <div className="flex flex-col gap-4 mt-4">
         {people.map((person) => (
           <div key={person.id}>
-            <h4>{person.name}</h4>
+            <h4 className="bg-blue-200">{person.name}</h4>
             <p>{person.age}</p>
             <p>{person.birthday}</p>
-            <p>{person.interests}</p>
+            <a
+              href={`/person/${person.name}`}
+              className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
+              onClick={(e) => {
+                e.preventDefault();
+                router.push(`/person/${person.name}`);
+              }}
+            >
+              Read interests
+            </a>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps() {
-  const people = await db.all('SELECT * FROM person');
+  // Assuming db and other necessary dependencies are imported here
+  const people = await db.all('SELECT * FROM person ORDER BY id DESC');
 
   return {
     props: {
-      people,
+      initialPeople: people,
     },
   };
 }
