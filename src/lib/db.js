@@ -2,13 +2,10 @@ const { AsyncDatabase } = require("promised-sqlite3");
 
 const dbPromise = (async () => {
   try {
-    // Create the AsyncDatabase object and open the database.
     const db = await AsyncDatabase.open("./db.sqlite");
 
-    // Access the inner sqlite3.Database object to use the API that is not exposed by AsyncDatabase.
     db.inner.on("trace", (sql) => console.log("[TRACE]", sql));
 
-    // Run some sql request.
     await db.run(
       `
         CREATE TABLE IF NOT EXISTS person (
@@ -16,8 +13,24 @@ const dbPromise = (async () => {
             name TEXT NOT NULL,
             age INTEGER,
             birthday TEXT NOT NULL,
-            interests TEXT
-    ) `
+            interests TEXT,
+            user_id TEXT NOT NULL
+          ); 
+      `
+    );
+
+    await db.run(
+      `
+        CREATE TABLE IF NOT EXISTS present (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            name TEXT NOT NULL,
+            price REAL,
+            from_where TEXT,
+            user_id TEXT NOT NULL,
+            person_id INTEGER NOT NULL,
+            FOREIGN KEY (person_id) REFERENCES person (id)
+          ); 
+      `
     );
 
     return db;

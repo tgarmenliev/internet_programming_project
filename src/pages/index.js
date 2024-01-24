@@ -1,50 +1,32 @@
-import { db } from '@/lib/db';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import CreatePerson from './CreatePerson';
+import { SignInButton, SignOutButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import DashboardPage from './dashboard';
 
-export default function Home({ initialPeople }) {
-  const [people, setPeople] = useState(initialPeople);
+export default function WelcomePage () {
   const router = useRouter();
+
+  const handleGoToDashboard = () => {
+    router.push('/dashboard');
+  };
 
   return (
     <div>
       <h1 className="text-2xl font-bold">Birthday website</h1>
-      <h3 className="text-xl mt-4 font-bold">Create person:</h3>
-      <div>
-        <CreatePerson addPerson={(person) => setPeople([person, ...people])} />
-      </div>
-      <h3 className="text-xl mt-4 font-bold">List of people:</h3>
-      <div className="flex flex-col gap-4 mt-4">
-        {people.map((person) => (
-          <div key={person.id}>
-            <h4 className="bg-blue-200">{person.name}</h4>
-            <p>{person.age}</p>
-            <p>{person.birthday}</p>
-            <a
-              href={`/person/${person.name}`}
-              className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
-              onClick={(e) => {
-                e.preventDefault();
-                router.push(`/person/${person.name}`);
-              }}
-            >
-              Read interests
-            </a>
-          </div>
-        ))}
-      </div>
+      <SignedIn>
+        <UserButton />
+        Welcome! <SignOutButton />
+      </SignedIn>
+      <SignedOut>
+        Please sign in: <SignInButton className="bg-slate-500" />
+      </SignedOut>
+      <button
+        type="submit"
+        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50"
+        onClick={handleGoToDashboard}
+      >
+        Go to dashboard
+      </button>
     </div>
   );
-}
-
-export async function getServerSideProps() {
-  // Assuming db and other necessary dependencies are imported here
-  const people = await db.all('SELECT * FROM person ORDER BY id DESC');
-
-  return {
-    props: {
-      initialPeople: people,
-    },
-  };
-}
+};

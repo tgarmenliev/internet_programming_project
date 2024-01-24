@@ -1,48 +1,45 @@
 import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
-function CreatePerson({ addPerson }) {
+function CreatePerson({}) {
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [birthday, setBirthday] = useState('');
   const [interests, setInterests] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
-  const clearError = () => {
-    setError(null);
-  };
-
-  const createPerson = async () => {
-    try {
-      setLoading(true);
-
-      const res = await fetch('/api/createPerson', {
-        method: 'POST',
-        body: JSON.stringify({ name, age, birthday, interests }),
+  const {
+    isLoading,
+    error,
+    mutate: createPerson,
+  } = useMutation(
+    async (newPerson) => {
+      const res = await fetch("../api/createPerson", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ name, age, birthday, interests }),
       });
 
       if (!res.ok) {
         const { message } = await res.json();
+
         throw new Error(message);
       }
 
-      const json = await res.json();
-      addPerson(json);
-
-      setName('');
-      setAge('');
-      setBirthday('');
-      setInterests('');
-    } catch (err) {
-      setError(err.message);
-      setTimeout(clearError, 3000); // Clear error after 3 seconds
-    } finally {
-      setLoading(false);
+      const person = await res.json();
+      return person;
+    },
+    {
+      onSuccess: (people) => {
+        queryClient.invalidateQueries("people");
+      },
+      onError: (err) => {
+        setError(err.message);
+      },
     }
-  };
+  );
 
   return (
     <div className="w-1/4">
@@ -95,10 +92,17 @@ function CreatePerson({ addPerson }) {
         <button 
           type="submit" 
           className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50"
-          onClick={createPerson}
-          disabled={!name || !birthday || loading}
+          onClick={() => createPerson(
+            {
+              name,
+              age,
+              birthday,
+              interests,
+            }
+          )}
+          disabled={!name || !birthday || isLoading}
         >
-          {loading ? 'Creating...' : 'Create'}
+          {isLoading ? 'Creating...' : 'Create'}
         </button>
         <p className="text-red-500">{error}</p>
       </div>
@@ -107,3 +111,43 @@ function CreatePerson({ addPerson }) {
 }
 
 export default CreatePerson;
+
+
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(null);
+
+  // const clearError = () => {
+  //   setError(null);
+  // };
+
+  // const createPerson = async () => {
+  //   try {
+  //     setLoading(true);
+
+  //     const res = await fetch('/api/createPerson', {
+  //       method: 'POST',
+  //       body: JSON.stringify({ name, age, birthday, interests }),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+
+  //     if (!res.ok) {
+  //       const { message } = await res.json();
+  //       throw new Error(message);
+  //     }
+
+  //     const json = await res.json();
+  //     //addPerson(json);
+
+  //     setName('');
+  //     setAge('');
+  //     setBirthday('');
+  //     setInterests('');
+  //   } catch (err) {
+  //     setError(err.message);
+  //     setTimeout(clearError, 3000); // Clear error after 3 seconds
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
