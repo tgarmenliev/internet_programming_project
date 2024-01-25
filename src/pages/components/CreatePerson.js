@@ -41,15 +41,15 @@ function CreatePerson({}) {
     }
   );
 
-  return (
-    <div className="w-1/4">
-      <div className="flex flex-col gap-2">
+return (
+    <div className="box w-full">
+      <div className="flex flex-col gap-2 border-solid border-2 border-orange-500 rounded-xl p-3">
         <label htmlFor="name">Name:</label>
         <input 
           type="text" 
           id="name" 
           name="name" 
-          className="border border-gray-300 p-1" 
+          className="input input-bordered input-primary border-solid border-2 border-blue-200 rounded text-black"
           onChange={(event) => setName(event.target.value)}
           value={name}
         />
@@ -59,7 +59,7 @@ function CreatePerson({}) {
           type="number" 
           id="age" 
           name="age" 
-          className="border border-gray-300 p-1"
+          className="input input-bordered input-primary border-solid border-2 border-blue-200 rounded text-black"
           onChange={(event) => {
             const enteredAge = parseInt(event.target.value, 10);
             if (!isNaN(enteredAge) && enteredAge >= 0) {
@@ -74,7 +74,7 @@ function CreatePerson({}) {
           type="date" 
           id="birthday" 
           name="birthday" 
-          className="border border-gray-300 p-1" 
+          className="input input-bordered input-primary border-solid border-2 border-blue-200 rounded text-black"
           onChange={(event) => setBirthday(event.target.value)}
           value={birthday}
         />
@@ -84,34 +84,37 @@ function CreatePerson({}) {
           type="text" 
           id="interests" 
           name="interests" 
-          className="border border-gray-300 p-1" 
+          className="input input-bordered input-primary border-solid border-2 border-blue-200 rounded p-3 text-black"
           onChange={(event) => setInterests(event.target.value)}
           value={interests}
         />
 
-        <button 
-          type="submit" 
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50"
-          onClick={() => createPerson(
-            {
-              name,
-              age,
-              birthday,
-              interests,
-            }
-          )}
-          disabled={!name || !birthday || isLoading}
-        >
-          {isLoading ? 'Creating...' : 'Create'}
-        </button>
-        <p className="text-red-500">{error}</p>
+        {isLoading ? (
+          <span className="loading loading-ring loading-md"></span>
+        ) : (
+          <>
+            <button 
+              type="submit" 
+              className="btn bg-orange-500 hover:bg-orange-700 rounded-2xl mt-4"
+              onClick={() => createPerson({
+                name,
+                age,
+                birthday,
+                interests,
+              })}
+              disabled={!name || !birthday || isLoading}
+            >
+              {isLoading ? 'Creating...' : 'Create'}
+            </button>
+            <p className="text-red-500">{error}</p>
+          </>
+        )}
       </div>
     </div>
   );
 }
 
 export default CreatePerson;
-
 
   // const [loading, setLoading] = useState(false);
   // const [error, setError] = useState(null);

@@ -12,17 +12,19 @@ export default function WelcomePage () {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Birthday website</h1>
-      <SignedIn>
-        <UserButton />
-        Welcome! <SignOutButton />
-      </SignedIn>
-      <SignedOut>
-        Please sign in: <SignInButton className="bg-slate-500" />
-      </SignedOut>
+      <h1 className="text-2xl mt-6 ml-6 font-bold bg-center">Welcome to Present Manager website!</h1>
+      <div className="mt-4">
+        <SignedIn>
+          <UserButton />
+          Welcome! <SignOutButton />
+        </SignedIn>
+        <SignedOut>
+          <SignInButton className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-700 ml-6 mt-6" />
+        </SignedOut>
+      </div>
       <button
         type="submit"
-        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50"
+        className="bg-blue-900 text-white py-2 px-4 rounded hover:bg-blue-500 disabled:opacity-50 ml-6 mt-6"
         onClick={handleGoToDashboard}
       >
         Go to dashboard

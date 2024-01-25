@@ -1,3 +1,4 @@
+@import './fonts.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,11 +18,10 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: #ffe7ba; /* Your desired background color */
+  margin: 0;
+  padding: 0;
+  font-family: 'myfont', sans-serif; /* Use the specified font-family */
+  font-size: 16px;
 }
+

@@ -17,41 +17,76 @@ export default function Person({
     );
 
     return (
-        <div>
+        <div className="inline-block w-full">
             <div>
-                <h1>Name: {name}</h1>
-                <h2>Person id: {id}</h2>
-                <p>Age: {age}</p>
-                <p>Birthday: {birthday}</p>
-                <p>Interests: {interests}</p>
-            </div>
-            <h3 className="text-xl mt-4 font-bold">Create present:</h3>
-            <CreatePresent person_id={id} />
-            <button
-                type="submit"
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50"
-                onClick={() => router.push("/dashboard")}
-            >
-                Go back to dashboard
-            </button>
-            <div>
-                <h3 className="text-xl mt-4 font-bold">List of presents:</h3>
-                <div className="flex flex-col gap-4 mt-4">
-                    {isLoading ? (
-                        "Loading presents..."
-                    ) : !presents || presents.length === 0 ? (
-                        <p>No presents added yet.</p>
-                    ) : (
-                        presents.map((present) => (
-                            <div key={present.id}>
-                                <h4 className="bg-blue-200">{present.name}</h4>
-                                <p>{present.price}</p>
-                                <p>{present.from_where}</p>
-                            </div>
-                        ))
-                    )}
+                <div className="border-solid border-2 border-blue-900 rounded-xl p-4 mb-4 inline-block gap-4">
+                    <div className="flex" >
+                        <h1> Name: {name} </h1>
+                    </div>
                 </div>
+                <div className="border-solid border-2 border-blue-900 rounded-xl p-4 mb-4 inline-block gap-4">
+                    <div className="flex" >
+                        <p>Age: {age}</p>
+                    </div>
+                </div>
+                <div className="border-solid border-2 border-blue-900 rounded-xl p-4 mb-4 inline-block gap-4">
+                    <div className="flex" >
+                        <p>Birthday: {birthday}</p>
+                    </div>
+                </div>
+                <div className="border-solid border-2 border-blue-900 rounded-xl p-4 mb-4 inline-block gap-4">
+                    <div className="flex" >
+                    <p>Interests: {interests}</p>
+                    </div>
+                </div>
+                
             </div>
+
+            <div className="flex justify-around mt-6">
+
+                <div className="flex mr-[30px] ml-[30px] justify-center items-center">
+                    <div className="flex-1 bg-black-100 rounded-md">
+                        <h3 className="text-xl font-bold p-4">Create present</h3>
+                        <CreatePresent person_id={id} />
+                        <button
+                            type="submit"
+                            className="bg-blue-900 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50 text-center mt-4"
+                            onClick={() => router.push("/dashboard")}
+                        >
+                            Go back to dashboard
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex-auto">
+                    <div className="flex-1 items-center mr-[30px]">
+                        <h3 className="text-xl font-bold p-4">List of presents</h3>
+                        <div className="flex flex-col gap-4">
+                            {isLoading ? (
+                                "Loading presents..."
+                            ) : !presents || presents.length === 0 ? (
+                                <p>No presents added yet.</p>
+                            ) : (
+                                presents.map((present) => (
+                                    <div key={present.id} className="border-4 border-blue-500 rounded p-4">
+                                        <div className="bg-sky-200 border-blue-500 rounded">
+                                            <h4 className="text-black">{present.name}</h4>
+                                        </div>
+                                        <div className="border-blue-500 rounded">
+                                            <p className="text-black">Price: {present.price}</p>
+                                        </div>
+                                        <div className="border-blue-500 rounded">
+                                            <p className="text-black">From where: {present.from_where}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
     );
 }
