@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       console.log("personID:", personID);
 
       const presents = await db.all(
-        "SELECT name, price, from_where FROM present WHERE person_id = ? AND user_id = ?",
+        "SELECT id, name, price, from_where FROM present WHERE person_id = ? AND user_id = ?",
         personID, userId
       );
 
