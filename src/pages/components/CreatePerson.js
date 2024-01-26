@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 function CreatePerson({}) {
@@ -7,10 +7,23 @@ function CreatePerson({}) {
   const [birthday, setBirthday] = useState('');
   const [interests, setInterests] = useState('');
   const queryClient = useQueryClient();
+  
+  // Rename local error state to avoid conflict
+  const [localError, setLocalError] = useState(null);
+
+  useEffect(() => {
+    // Reset localError after 3 seconds
+    const timeoutId = setTimeout(() => {
+      setLocalError(null);
+    }, 3000);
+
+    // Cleanup the timeout when the component unmounts or when localError changes
+    return () => clearTimeout(timeoutId);
+  }, [localError]);
 
   const {
     isLoading,
-    error,
+    error: mutationError, // Rename error to mutationError
     mutate: createPerson,
   } = useMutation(
     async (newPerson) => {
@@ -36,12 +49,13 @@ function CreatePerson({}) {
         queryClient.invalidateQueries("people");
       },
       onError: (err) => {
-        setError(err.message);
+        // Corrected: Use setLocalError instead of setError
+        setLocalError(err.message);
       },
     }
   );
 
-return (
+  return (
     <div className="box w-full">
       <div className="flex flex-col gap-2 border-solid border-2 border-orange-500 rounded-xl p-3">
         <label htmlFor="name">Name:</label>
@@ -89,32 +103,29 @@ return (
           value={interests}
         />
 
-        {isLoading ? (
-          <span className="loading loading-ring loading-md"></span>
-        ) : (
-          <>
-            <button 
-              type="submit" 
-              className="btn bg-orange-500 hover:bg-orange-700 rounded-2xl mt-4"
-              onClick={() => createPerson({
-                name,
-                age,
-                birthday,
-                interests,
-              })}
-              disabled={!name || !birthday || isLoading}
-            >
-              {isLoading ? 'Creating...' : 'Create'}
-            </button>
-            <p className="text-red-500">{error}</p>
-          </>
-        )}
+        <button 
+          type="submit" 
+          className={`btn ${(!name || !birthday || isLoading) ? 'bg-gray-400 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-700'} rounded-2xl mt-4`}
+          onClick={() => createPerson(
+            {
+              name,
+              age,
+              birthday,
+              interests,
+            }
+          )}
+          disabled={!name || !birthday || isLoading}
+        >
+          {isLoading ? 'Creating...' : 'Create'}
+        </button>
+        <p className="text-red-500">{localError}</p>
       </div>
     </div>
   );
 }
 
 export default CreatePerson;
+
 
   // const [loading, setLoading] = useState(false);
   // const [error, setError] = useState(null);

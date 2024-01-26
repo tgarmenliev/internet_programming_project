@@ -14,6 +14,7 @@ export default async function handler(req, res) {
 
             // Check if the birthday is in the future
             if (new Date(birthday) > new Date()) {
+                console.log("Birthday cannot be in the future");
                 res.status(400).json({ message: "Birthday cannot be in the future" });
                 return;
             }

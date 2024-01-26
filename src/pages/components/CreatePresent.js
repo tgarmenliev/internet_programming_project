@@ -78,27 +78,21 @@ function CreatePresent({person_id}) {
           onChange={(event) => setFrom(event.target.value)}
           value={from_where}
         />
-
-        {isLoading ? (
-          <span className="loading loading-ring loading-md"></span>
-        ) : (
-          <>
-            <button 
-              type="submit" 
-              className="btn bg-orange-500 hover:bg-orange-700 rounded-2xl mt-4"
-              onClick={() => createPresent({
-                name,
-                price,
-                from_where,
-                person_id
-              })}
-              disabled={!name || isLoading}
-            >
-              {isLoading ? 'Creating...' : 'Create'}
-            </button>
-            <p className="text-red-500">{error}</p>
-          </>
-        )}
+        
+        <button 
+          type="submit" 
+          className={`btn ${(!name || isLoading) ? 'bg-gray-400 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-700'} rounded-2xl mt-4`}
+          onClick={() => createPresent({
+            name,
+            price,
+            from_where,
+            person_id
+          })}
+          disabled={!name || isLoading}
+        >
+          {isLoading ? 'Creating...' : 'Create'}
+        </button>
+        <p className="text-red-500">{error}</p>
       </div>
     </div>
 
