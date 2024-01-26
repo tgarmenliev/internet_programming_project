@@ -47,6 +47,11 @@ function CreatePerson({}) {
     {
       onSuccess: (people) => {
         queryClient.invalidateQueries("people");
+
+        setName('');
+        setAge('');
+        setBirthday('');
+        setInterests('');
       },
       onError: (err) => {
         // Corrected: Use setLocalError instead of setError

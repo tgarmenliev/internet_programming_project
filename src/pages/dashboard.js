@@ -1,9 +1,13 @@
 import { useQuery } from "react-query";
+import { useRouter } from "next/router";
 import CreatePresent from "@/pages/components/CreatePresent";
 import { UserButton } from "@clerk/nextjs";
-import CreatePerson from './components/CreatePerson'; // Import your CreatePerson component
-import LogoImage from '/public/next.svg'; // Adjust the path according to your file structure
+import CreatePerson from './components/CreatePerson';
+import LogoImage from '/public/next.svg';
+
 export default function DashboardPage() {
+  const router = useRouter();
+
   const { data: people, isLoading } = useQuery("people", () =>
     fetch("/api/getPeople").then((res) => res.json())
   );
@@ -15,8 +19,21 @@ export default function DashboardPage() {
           <img src="/logo.png" alt="Logo" className="w-[100px] h-[100px] mr-2" />
           <h1 className="text-2xl font-bold">My Present Manager</h1>
         </div>
-        <UserButton />
+
+        <div className="flex items-center">
+          <div className="mr-4">
+            <UserButton />
+          </div>
+
+          <button
+            className="bg-orange-500 hover:bg-orange-700 text-white py-2 px-4 rounded"
+            onClick={() => router.push("https://www.youtube.com/watch?v=JV-G0lqDCok")}
+          >
+            Update person
+          </button>
+        </div>
       </div>
+
       {/* Create Person and List of People Section */}
       <div className="flex justify-around mt-4">
         <div className="flex mr-[30px] ml-[30px] justify-center items-center">

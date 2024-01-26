@@ -33,6 +33,10 @@ function CreatePresent({person_id}) {
     {
       onSuccess: (presents) => {
         queryClient.invalidateQueries("presents");
+
+        setName('');
+        setPrice('');
+        setFrom('');
       },
       onError: (err) => {
         setError(err.message);
@@ -78,7 +82,7 @@ function CreatePresent({person_id}) {
           onChange={(event) => setFrom(event.target.value)}
           value={from_where}
         />
-        
+
         <button 
           type="submit" 
           className={`btn ${(!name || isLoading) ? 'bg-gray-400 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-700'} rounded-2xl mt-4`}
